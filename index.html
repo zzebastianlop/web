@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <script src="jspdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
+    <script src="app.js"></script>
+    <style>
+        #preview {
+            margin-top: 10px;
+            max-width: 100%;
+            max-height: 300px;
+            display: none; /* Oculta el preview inicialmente */
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const descripcion = document.getElementById('descripcion');
+            const maxChars = 1500;
+
+            descripcion.addEventListener('input', function() {
+                descripcion.value = addLineBreaks(descripcion.value);
+            });
+        });
+
+        function addLineBreaks(text) {
+            const maxChars = 1500; // Número máximo de caracteres permitidos
+            const maxCharsPerLine = 83; // Número máximo de caracteres por línea
+            let formattedText = '';
+            let currentLineLength = 0;
+            let totalChars = 0;
+
+            const words = text.split(' ');
+
+            for (let i = 0; i < words.length; i++) {
+                const word = words[i];
+
+                // Si agregar esta palabra excede el máximo de caracteres por línea, añade un salto de línea
+                if (currentLineLength + word.length + 1 > maxCharsPerLine) {
+                    formattedText += '\n';
+                    currentLineLength = 0;
+                }
+
+                // Si agregar esta palabra excede el máximo de caracteres permitidos, detén el bucle
+                if (totalChars + word.length + 1 > maxChars) {
+                    break;
+                }
+
+                // Añadir la palabra al texto formateado
+                formattedText += word + ' ';
+                currentLineLength += word.length + 1; // +1 para el espacio
+                totalChars += word.length + 1; // +1 para el espacio
+            }
+
+            // Limita el texto a maxChars
+            return formattedText.substring(0, maxChars).trim();
+        }
+
+        function handleImagePreview(input, previewElementId) {
+            const preview = document.getElementById(previewElementId);
+            const file = input.files[0];
+            const reader = new FileReader();
+
+            reader.onloadend = function() {
+                preview.src = reader.result;
+                preview.style.display = 'block';
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+            }
+        }
+
+
+
+        function addLineBreaksuno(text) {
+            const maxChars = 70; // Número máximo de caracteres permitidos
+            let formattedText = '';
+            let totalChars = 0;
+
+            const words = text.split(' ');
+
+            for (let i = 0; i < words.length; i++) {
+                const word = words[i];
+
+                // Si agregar esta palabra excede el máximo de caracteres permitidos, detén el bucle
+                if (totalChars + word.length + 1 > maxChars) {
+                    break;
+                }
+
+                // Añadir la palabra al texto formateado
+                formattedText += word + ' ';
+                totalChars += word.length + 1; // +1 para el espacio
+            }
+
+            // Limita el texto a maxChars
+            return formattedText.substring(0, maxChars).trim();
+        }
+
+        function addLineBreaksdos(text) {
+            const maxChars = 120; // Número máximo de caracteres permitidos
+            let formattedText = '';
+            let totalChars = 0;
+
+            const words = text.split(' ');
+
+            for (let i = 0; i < words.length; i++) {
+                const word = words[i];
+
+                // Si agregar esta palabra excede el máximo de caracteres permitidos, detén el bucle
+                if (totalChars + word.length + 1 > maxChars) {
+                    break;
+                }
+
+                // Añadir la palabra al texto formateado
+                formattedText += word + ' ';
+                totalChars += word.length + 1; // +1 para el espacio
+            }
+
+            // Limita el texto a maxChars
+            return formattedText.substring(0, maxChars).trim();
+        }
+    </script>
+    
+
+    
+    
+
+</head>
+
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h3>GUIA RAPIDA PARA EQUIPOS BIOMÉDICOS</h3>
+                <hr>
+                <form id="form">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="nombredelequipo" class="form-label">Nombre del Equipo</label>
+                            <input type="text" class="form-control" id="nombredelequipo">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="modelo" class="form-label">Modelo</label>
+                            <input type="text" class="form-control" id="modelo">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="marca" class="form-label">Marca</label>
+                            <input type="text" class="form-control" id="marca">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="placa" class="form-label">Placa</label>
+                            <input type="text" class="form-control" id="placa">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="riesgo" class="form-label">Riesgo</label>
+                        <select class="form-select" id="riesgo">
+                            <option value="">Seleccione</option>
+                            <option value="Clase I">Clase I</option>
+                            <option value="Clase IIA">Clase IIA</option>
+                            <option value="Clase IIB">Clase IIB</option>
+                            <option value="Clase III">Clase III</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="sede" class="form-label">Sede</label>
+                        <select class="form-select" id="sede">
+                            <option value="">Seleccione</option>
+                            <option value="Sede I">Sede I</option>
+                            <option value="Sede II">Sede II</option>
+                            <option value="Promedan">Promedan</option>
+                            <option value="Caucasia">Caucasia</option>
+                            <option value="Otro">Otro</option>                                                       
+                        </select>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="temperatura" class="form-label">Temperatura de Operación (°C)</label>
+                            <input type="text" class="form-control" id="temperatura">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="dimensiones" class="form-label">Dimensiones (cm - Largo x Alto x Ancho)</label>
+                            <input type="text" class="form-control" id="dimensiones">
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <label for="requerimientos" class="form-label">Requerimientos de alimentación<nav></nav></label>
+                            <input type="text" class="form-control" id="requerimientos">
+                        </div>
+                        
+                    </div>
+
+                    <label for="imageUpload">Cargar imagen:</label>
+                    <input type="file" id="imageUpload" accept="image/*"><br>
+
+                    <img id="preview" src="" alt="Preview de la imagen seleccionada">
+
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="descripcion" class="form-label">Descripción del Equipo (max 1500 caracteres)</label>
+                            <input type="text" class="form-control" id="descripcion" oninput="addLineBreaks()">
+                        </div>
+                    </div>
+
+                    <h3>PARTES DEL EQUIPO (max 70 caracteres) </h3>
+                    <hr>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="trece" class="form-label">1.</label>
+                            <input type="text" class="form-control" id="trece" oninput="addLineBreaksuno()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="uno" class="form-label">2.</label>
+                                <input type="text" class="form-control" id="uno" oninput="addLineBreaksuno()" >
+                        </div>
+                        <div class="col-md-6">
+                                <label for="dos" class="form-label">3.</label>
+                                <input type="text" class="form-control" id="dos" oninput="addLineBreaksuno()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="tres" class="form-label">4.</label>
+                                <input type="text" class="form-control" id="tres" oninput="addLineBreaksuno()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="cuatro" class="form-label">5.</label>
+                                <input type="text" class="form-control" id="cuatro" oninput="addLineBreaksuno()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="cinco" class="form-label">6.</label>
+                                <input type="text" class="form-control" id="cinco" oninput="addLineBreaksuno()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="seis" class="form-label">7.</label>
+                                <input type="text" class="form-control" id="seis" oninput="addLineBreaksuno()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="siete" class="form-label">8.</label>
+                                <input type="text" class="form-control" id="siete" oninput="addLineBreaksuno()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="ocho" class="form-label">9.</label>
+                                <input type="text" class="form-control" id="ocho" oninput="addLineBreaksuno()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="nueve" class="form-label">10.</label>
+                                <input type="text" class="form-control" id="nueve" oninput="addLineBreaksuno()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="diez" class="form-label">11.</label>
+                                <input type="text" class="form-control" id="diez" oninput="addLineBreaksuno()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="once" class="form-label">12.</label>
+                                <input type="text" class="form-control" id="once" oninput="addLineBreaksuno()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="doce" class="form-label">13.</label>
+                                <input type="text" class="form-control" id="doce" oninput="addLineBreaksuno()">
+                        </div>
+                        
+                    </div>
+
+                    <label for="imageUpload1">Cargar imagen:</label>
+                    <input type="file" id="imageUpload1" accept="image/*"><br>
+
+                    <img id="preview1" src="" alt="Preview de la imagen seleccionada">
+
+                    <h3>OPERACIÓN DEL EQUIPO (PASOS)</h3>
+                    <hr>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                                <label for="unoq" class="form-label">1.</label>
+                                <input type="text" class="form-control" id="unoq" oninput="addLineBreaksdos()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="dosq" class="form-label">2.</label>
+                                <input type="text" class="form-control" id="dosq" oninput="addLineBreaksdos()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="tresq" class="form-label">3.</label>
+                                <input type="text" class="form-control" id="tresq" oninput="addLineBreaksdos()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="cuatroq" class="form-label">4.</label>
+                                <input type="text" class="form-control" id="cuatroq" oninput="addLineBreaksdos()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="cincoq" class="form-label">5.</label>
+                                <input type="text" class="form-control" id="cincoq" oninput="addLineBreaksdos()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="seisq" class="form-label">6.</label>
+                                <input type="text" class="form-control" id="seisq" oninput="addLineBreaksdos()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="sieteq" class="form-label">7.</label>
+                                <input type="text" class="form-control" id="sieteq" oninput="addLineBreaksdos()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="ochoq" class="form-label">8.</label>
+                                <input type="text" class="form-control" id="ochoq" oninput="addLineBreaksdos()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="nueveq" class="form-label">9.</label>
+                                <input type="text" class="form-control" id="nueveq" oninput="addLineBreaksdos()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="diezq" class="form-label">10.</label>
+                                <input type="text" class="form-control" id="diezq" oninput="addLineBreaksdos()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="onceq" class="form-label">11.</label>
+                                <input type="text" class="form-control" id="onceq" oninput="addLineBreaksdos()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="doceq" class="form-label">12.</label>
+                                <input type="text" class="form-control" id="doceq" oninput="addLineBreaksdos()">
+                        </div>
+                    </div>
+
+                    <h3>ACCESORIOS</h3>
+                    <hr>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                                <label for="unow" class="form-label">1.</label>
+                                <input type="text" class="form-control" id="unow" oninput="addLineBreakstres()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="dosw" class="form-label">2.</label>
+                                <input type="text" class="form-control" id="dosw" oninput="addLineBreakstres()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="tresw" class="form-label">3.</label>
+                                <input type="text" class="form-control" id="tresw" oninput="addLineBreakstres()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="cuatrow" class="form-label">4.</label>
+                                <input type="text" class="form-control" id="cuatrow" oninput="addLineBreakstres()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="cincow" class="form-label">5.</label>
+                                <input type="text" class="form-control" id="cincow" oninput="addLineBreakstres()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="seisw" class="form-label">6.</label>
+                                <input type="text" class="form-control" id="seisw" oninput="addLineBreakstres()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="sietew" class="form-label">7.</label>
+                                <input type="text" class="form-control" id="sietew" oninput="addLineBreakstres()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="ochow" class="form-label">8.</label>
+                                <input type="text" class="form-control" id="ochow" oninput="addLineBreakstres()">
+                        </div>
+                    </div>
+
+                    <h3>LIMPIEZA Y DESINFECCIÓN</h3>
+                    <hr>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                                <label for="unoe" class="form-label">1.</label>
+                                <input type="text" class="form-control" id="unoe" oninput="addLineBreakstres()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="dose" class="form-label">2.</label>
+                                <input type="text" class="form-control" id="dose" oninput="addLineBreakstres()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="trese" class="form-label">3.</label>
+                                <input type="text" class="form-control" id="trese" oninput="addLineBreakstres()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="cuatroe" class="form-label">4.</label>
+                                <input type="text" class="form-control" id="cuatroe" oninput="addLineBreakstres()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="cincoe" class="form-label">5.</label>
+                                <input type="text" class="form-control" id="cincoe" oninput="addLineBreakstres()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="seise" class="form-label">6.</label>
+                                <input type="text" class="form-control" id="seise" oninput="addLineBreakstres()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="sietee" class="form-label">7.</label>
+                                <input type="text" class="form-control" id="sietee" oninput="addLineBreakstres()">
+                        </div>
+                        <div class="col-md-6">
+                                <label for="ochoe" class="form-label">8.</label>
+                                <input type="text" class="form-control" id="ochoe" oninput="addLineBreakstres()">
+                        </div>
+                    </div>
+
+                    
+                    <span class="d-block pb-2">Firma digital aqui</span>
+                    <div class="signature mb-2" style="width: 100%; height: 200px;">
+                        <canvas id="signature-canvas"
+                            style="border: 1px dashed red; width: 100%; height: 200px;"></canvas>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mb-4">Generar PDF</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('imageUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgElement = document.getElementById('preview');
+                    imgElement.src = e.target.result; // Establece la fuente de la imagen al resultado
+                    imgElement.style.display = 'block'; // Muestra la imagen
+                }
+                reader.readAsDataURL(file); // Lee el archivo como URL de datos
+            }
+        });
+    </script>
+
+    <script>
+        document.getElementById('imageUpload1').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgElement = document.getElementById('preview1');
+                    imgElement.src = e.target.result; // Establece la fuente de la imagen al resultado
+                    imgElement.style.display = 'block'; // Muestra la imagen
+                }
+                reader.readAsDataURL(file); // Lee el archivo como URL de datos
+            }
+        });
+    </script>
+
+    
+
+    
+
+</body>
+
+</html>
